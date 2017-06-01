@@ -11,6 +11,8 @@ $.lang.register('ytplayer.command.ytp.togglestealrefund.enable', 'YouTube Player
 $.lang.register('ytplayer.command.ytp.togglestealrefund.disable', 'YouTube Player stolen songs will NOT be refunded to users.');
 $.lang.register('ytplayer.command.ytp.togglerandom.toggled', 'YouTube Player Playlist Randomization has been $1');
 $.lang.register('ytplayer.command.ytp.toggleannounce.toggled', 'YouTube Player Announcements have been $1');
+$.lang.register('ytplayer.command.ytp.setsongrequestnotifications.usage', 'Usage: !ytp togglesongrequestnotifications [level]  Level can be chat|whisper|off');
+$.lang.register('ytplayer.command.ytp.setsongrequestnotifications.set', 'YouTube Song Request Notifications have been set to $1');
 $.lang.register('ytplayer.command.ytp.setrequestmax.usage', 'Usage: !ytp setrequestmax [max requests]');
 $.lang.register('ytplayer.command.ytp.setrequestmax.success', 'Maximum concurrent song requests set to $1');
 $.lang.register('ytplayer.command.ytp.setmaxvidlength.usage', 'Usage: !ytp setmaxvidlength [seconds]');

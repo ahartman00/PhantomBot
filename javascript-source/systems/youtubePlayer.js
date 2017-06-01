@@ -32,6 +32,15 @@
             CUED: 5,
             KEEPALIVE: 200
         },
+
+        /* enum for song request notifications settings */
+        notificationSettingsEnum = {
+            CHAT: 'chat',
+            WHISPER: 'whisper',
+            OFF: 'off'
+        },
+        songrequestNotifications = $.getSetIniDbString('ytSettings', 'songrequestNotifications', notificationSettingsEnum.CHAT),
+
         /* @type {PlayerClientInterface} */
         connectedPlayerClient = null,
         /* @type {BotPlayList} */
@@ -1284,6 +1293,24 @@
                 announceInChat = !announceInChat;
                 $.setIniDbBoolean('ytSettings', 'announceInChat', announceInChat);
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.toggleannounce.toggled', (announceInChat ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+                return;
+            }
+
+            /**
+             * @commandpath ytp setnotifications [level] - Set how notifications for song request events display.  Level can be (chat|whisper|off)
+             */
+            if (action.equalsIgnoreCase('setnotifications')) {
+                if (!args[1] && (args[1].toLowerCase() === notificationSettingsEnum.CHAT || args[1].toLowerCase() === notificationSettingsEnum.WHISPER || args[1].toLowerCase() === notificationSettingsEnum.OFF)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setsongrequestnotifications.usage'));
+                    return;
+                }
+                songrequestNotifications = args[1].toLowerCase();
+                $.setIniDbString('ytSettings', 'songrequestNotifications', songrequestNotifications);
+
+                if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                    $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER)) 
+                        + $.lang.get('ytplayer.command.ytp.setsongrequestnotifications.set', songrequestNotifications));
+                }
                 return;
             }
 
