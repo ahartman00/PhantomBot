@@ -1192,13 +1192,22 @@
                 if (actionArgs[0]) {
                     var removedSongTitle = currentPlaylist.removeSong(actionArgs[0]);
                     if (removedSongTitle) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.delrequest.success', actionArgs[0], removedSongTitle));
+                        if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                            $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                                + $.lang.get('ytplayer.command.delrequest.success', actionArgs[0], removedSongTitle));
+                        }
                         connectedPlayerClient.pushSongList();
                     } else {
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.delrequest.404', actionArgs[0]));
+                        if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                            $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                                + $.lang.get('ytplayer.command.delrequest.404', actionArgs[0]));
+                        }
                     }
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.delrequest.usage'));
+                    if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                        $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                            + $.lang.get('ytplayer.command.delrequest.usage'));
+                    }
                 }
                 return;
             }
@@ -1445,7 +1454,10 @@
              */
             if (action.equalsIgnoreCase('add')) {
                 if (!connectedPlayerClient) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
+                    if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                        $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                            + $.lang.get('ytplayer.client.404'));
+                    }
                     return;
                 } 
                 if (actionArgs.length > 0) {
@@ -1453,17 +1465,29 @@
                         var youtubeVideo = new YoutubeVideo(actionArgs.join(' '), sender);
                     } catch (ex) {
                         $.log.error("YoutubeVideo::exception: " + ex);
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.add.failed', ex));
+                        if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                            $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                                + $.lang.get('ytplayer.command.playlist.add.failed', ex));
+                        }
                         return;
                     }
 
                     if (currentPlaylist.addToPlaylist(youtubeVideo)) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.add.success', youtubeVideo.getVideoTitle(), currentPlaylist.getPlaylistname()));
+                        if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                            $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                                + $.lang.get('ytplayer.command.playlist.add.success', youtubeVideo.getVideoTitle(), currentPlaylist.getPlaylistname()));
+                        }
                     } else {
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.add.failed', currentPlaylist.getRequestFailReason()));
+                        if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                            $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                                + $.lang.get('ytplayer.command.playlist.add.failed', currentPlaylist.getRequestFailReason()));
+                        }
                     }
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.add.usage'));
+                    if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                        $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                            + $.lang.get('ytplayer.command.playlist.add.usage'));
+                    }
                 }
                 loadPanelPlaylist();
                 return;
@@ -1690,22 +1714,34 @@
          */
         if (command.equalsIgnoreCase('songrequest') || command.equalsIgnoreCase('addsong')) {
             if ($.getIniDbBoolean('ytpBlacklist', sender, false)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklisted'));
+                if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                    $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                        + $.lang.get('ytplayer.blacklisted'));
+                }
                 return;
             }
 
             if (args.length == 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.usage'));
+                if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                    $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                        + $.lang.get('ytplayer.command.songrequest.usage'));
+                }
                 $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
                 return;
             }
 
             var request = currentPlaylist.requestSong(event.getArguments(), sender);
             if (request != null) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.success', request.getVideoTitle(), currentPlaylist.getRequestsCount(), request.getVideoId()));
+                if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                    $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                        + $.lang.get('ytplayer.command.songrequest.success', request.getVideoTitle(), currentPlaylist.getRequestsCount(), request.getVideoId()));
+                }
                 connectedPlayerClient.pushSongList();
             } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.failed', currentPlaylist.getRequestFailReason()));
+                if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                    $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                        + $.lang.get('ytplayer.command.songrequest.failed', currentPlaylist.getRequestFailReason()));
+                }
             }
         }
 
@@ -1717,24 +1753,39 @@
             if (args.length == 0) {
                 var songTitle = currentPlaylist.removeUserSong(sender);
                 if (songTitle) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.success', songTitle));
+                    if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                        $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                            + $.lang.get('ytplayer.command.wrongsong.success', songTitle));
+                    }
                     connectedPlayerClient.pushSongList();
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.404'));
+                    if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                        $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                            + $.lang.get('ytplayer.command.wrongsong.404'));
+                    }
                 }
             } else {
                 if (args[0].equalsIgnoreCase('user')) {
                     if (args[1]) {
                         var songTitle = currentPlaylist.removeUserSong(args[1].toLowerCase());
                         if (songTitle) {
-                            $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.user.success', args[1], songTitle));
+                            if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                                $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                                    + $.lang.get('ytplayer.command.wrongsong.user.success', args[1], songTitle));
+                            }
                             connectedPlayerClient.pushSongList();
                         } else {
-                            $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.404'));
+                            if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                                $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                                    + $.lang.get('ytplayer.command.wrongsong.404'));
+                            }
                         }
                     }
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.usage'));
+                    if (songrequestNotifications !== notificationSettingsEnum.OFF) {
+                        $.say($.whisperPrefix(sender, (songrequestNotifications === notificationSettingsEnum.WHISPER))
+                            + $.lang.get('ytplayer.command.wrongsong.usage'));
+                    }
                 }
             }
         }
